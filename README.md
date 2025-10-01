@@ -88,65 +88,71 @@ Você pode conferir a estrutura em VPC > Suas VPC > mapa de rede:
 ---
 
 ### 2. Criação dos Security Groups
-- **Bastion Host**: 
+#### **Bastion Host** :
 **Regra de entrada:**
-SSH port 22
-Source: my ip
-
-HTTP port 80
-Source: grupo de segurança ALB
+| Tipo | Porta | Destino |
+|------|-------|---------|
+| SSH  |  22   | My Ip   | 
+| HTTP |  80   | Sg-ALB  |
 
 **Regra de saida:**
-All traffic
-Source: 0.0.0.0
+| Tipo | Porta | Destino|
+|-------------|---|---------|
+| All traffic | - | 0.0.0.0 |
 
 ![Estrutura](imagens/sg-regra-bastion.png)
 
-- **Instância WordPress**:
+#### **Instância WordPress**:
 **Regra de entrada:**
-SSH port 22
-Source: grupo de segurança Bastion
-HTTP port 80
-Source: grupo de segurança ALB
+| Tipo | Porta | Destino |
+|------|-------|---------|
+| SSH  |  22   | Sg-Bastion | 
+| HTTP |  80   | Sg-ALB  |
 
 **Regra de saida:**
-All traffic
-Source: 0.0.0.0
-
-MYSQL/Aurora port 3306
-Source: groupo de segurança RDS
+| Tipo | Porta | Destino|
+|------|-------|--------|
+| All traffic | - | 0.0.0.0 |
+| MYSQL/Aurora | 3306 | Sg-RDS |
 
 ![Estrutura](imagens/sg-regra-ec2.png)
 
-- - **LoadBalancer**:
-Regra de entrada:
-HTTP port 80
-Source: 0.0.0.0
+#### **LoadBalancer**:
+**Regra de entrada:**
+| Tipo | Porta | Destino|
+|------|-------|--------|
+| HTTP |   80  | 0.0.0.0 |
 
-Regra de saida:
-HTTP port 80
-Source: gropo de segurança EC2
+**Regra de saida:**
+| Tipo | Porta | Destino|
+|------|-------|--------|
+| HTTP |   80  | Sg-EC2 |
 
 ![Estrutura](imagens/sg-regra-ALB.png)
-- **RDS**: Porta 3306 (MySQL), origem: SG da instância.
-Regra de entrada:
-MYSQL/Aurora port 3306
-Source: grupo de segurança EC2
 
-Regra de saida:
-All traffic
-Source: 0.0.0.0
+#### **RDS**:
+**Regra de entrada:**
+| Tipo | Porta | Destino |
+|------|-------|---------|
+| MYSQL/Aurora | 3306 | Sg-EC2 |
+
+**Regra de saida:**
+| Tipo | Porta | Destino |
+|------|-------|---------|
+| All traffic | - | 0.0.0.0 |
 
 ![Estrutura](imagens/sg-regra-rds.png)
   
-- **EFS**: Porta NFS, origem: SG da instância.
-Regra de entrada:
-NFS port 2049
-Source: grupo de segurança EC2
+#### **EFS**:
+**Regra de entrada:**
+| Tipo | Porta | Destino |
+|------|-------|---------|
+| NFS | 2049 | Sg-EC2 |
 
-Regra de saida:
-All traffic
-Source: 0.0.0.0
+**Regra de saida:**
+| Tipo | Porta | Destino |
+|------|-------|---------|
+| All traffic | - | 0.0.0.0 |
 
 ![Estrutura](imagens/sg-regra-efs.png)
 
@@ -199,14 +205,25 @@ chmod 400 "sua-chave.pem"
 ```
 acesse a instancia Bastion com o comando:
 ```
-ssh -i "sua-chave.pem" ec2-user@<seu ip>
+ssh -i "sua-chave.pem" ec2-user@<IP-PUBLICO-BASTION>
 ```
 e execute:
 ```
-chmod 400 /.ssh/"sua-chave.pem"
+chmod 400 /.ssh/"sua-chave.pem" //para dar permisão a sua chave dentro da isntancia bastion
+```
+caso queira acessar sua instancia privada:
+```
+ssh -i "sua-chave.pem" ec2-user@<IP-PRIVADO-INSTANCIA>
 ```
 
-Essa intancia sera usada como ponte para que possamos acessar as instancia privadas.
+Essa intancia (bastion) tem a função principal deo ponte para que possamos acessar as instancia privadas. Nesse documento não usamos eles mas caso tenha algum problema recomendo verificar a instancia privada atraves desses comandos.
+Aqui alguns comando que podem te ajudar:
+```
+docker --version //verificar a instalação do docker
+docker logs wordpress-container //ver os logs do container e verificar status do container
+cat /var/log/wordpress.log //log da instancia
+df -h //uma forma de verificar se o efs esta montado
+```
 
 ---
 
@@ -233,7 +250,7 @@ Adicione o seguinte User-Data
 ### 8. Criando Load Balancer
 - Escolha para aplicação
 - De um nome
-- tipo internet-facing![Estrutura](imagens/rds.png)
+- tipo internet-facing
 - Escolha a VPC
 - Adicione as subnets private-app 1a e 1b
 - E o segurity group do ALB
@@ -261,7 +278,8 @@ Adicione o seguinte User-Data
 
 ### Parabéns
 Agora você pode consultar suas instancia criada em Instancias.
-Sua aplicação é auto-escalavel e pode suportar muitos acessos de forma segura para todos
+Sua aplicação é auto-escalavel e pode suportar muitos acessos de forma segura para todos.
+Você pode verificar a saude dos no target group, deve ter 2 Health.
 
 ![Estrutura](imagens/autoscaling5.png)
 
