@@ -29,7 +29,7 @@ echo "NFS instalado"
 sleep 20
 
 # Configuração do EFS
-EFS_ID="fs-0d40b105f5979829c"
+EFS_ID="seu-fs-id"
 MOUNT_POINT="/mnt/efs"
 EFS_DNS="${EFS_ID}.efs.us-east-1.amazonaws.com"
 
@@ -53,10 +53,10 @@ services:
     ports:
       - "80:80"
     environment:
-      WORDPRESS_DB_HOST: wordpress-db.cmngc02qqcr4.us-east-1.rds.amazonaws.com
+      WORDPRESS_DB_HOST: <end-point-do-seu-banco>
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DB_USER: admin
-      WORDPRESS_DB_PASSWORD: 02teste07
+      WORDPRESS_DB_PASSWORD: <senha-criada-no-rds>
     volumes:
       - $MOUNT_POINT:/var/www/html/wp-content/uploads
 EOF
