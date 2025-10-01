@@ -209,7 +209,7 @@ ssh -i "sua-chave.pem" ec2-user@<IP-PUBLICO-BASTION>
 ```
 e execute:
 ```
-chmod 400 /.ssh/"sua-chave.pem" //para dar permisão a sua chave dentro da isntancia bastion
+chmod 400 /.ssh/"sua-chave.pem" #para dar permisão a sua chave dentro da isntancia bastion
 ```
 caso queira acessar sua instancia privada:
 ```
@@ -219,10 +219,10 @@ ssh -i "sua-chave.pem" ec2-user@<IP-PRIVADO-INSTANCIA>
 Essa intancia (bastion) tem a função principal deo ponte para que possamos acessar as instancia privadas. Nesse documento não usamos eles mas caso tenha algum problema recomendo verificar a instancia privada atraves desses comandos.
 Aqui alguns comando que podem te ajudar:
 ```
-docker --version //verificar a instalação do docker
-docker logs wordpress-container //ver os logs do container e verificar status do container
-cat /var/log/wordpress.log //log da instancia
-df -h //uma forma de verificar se o efs esta montado
+docker --version #verificar a instalação do docker
+docker logs wordpress-container #ver os logs do container e verificar status do container
+cat /var/log/wordpress.log #log da instancia
+df -h #uma forma de verificar se o efs esta montado
 ```
 
 ---
@@ -276,10 +276,12 @@ Adicione o seguinte User-Data
 
 ![Estrutura](imagens/autoscaling4.png)
 
+![Estrutura](imagens/autoscaling5.png)
+
 ### Parabéns
 Agora você pode consultar suas instancia criada em Instancias.
 Sua aplicação é auto-escalavel e pode suportar muitos acessos de forma segura para todos.
 Você pode verificar a saude dos no target group, deve ter 2 Health.
 
-![Estrutura](imagens/autoscaling5.png)
+
 
