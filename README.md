@@ -1,6 +1,8 @@
 # Projeto WordPress em AWS com Docker e Docker Compose
+![AWS](https://img.shields.io/badge/AWS-%23FF9900?style=for-the-badge&logo=icloud&logoColor=white)
+![DOCKER](https://img.shields.io/badge/docker-blue?style=for-the-badge&logo=Docker&logoColor=white)
 
-Este projeto demonstra a implantação de uma aplicação **WordPress** em uma infraestrutura escalável e resiliente na **AWS**, utilizando boas práticas de **DevOps** e segurança.  
+Este projeto tem como objetivo criar uma aplicação Wordpress rodando atravez de um docker composse em alta escalibilidade e resiliencia na AWS, utilizando boas praticas de DevOps.  
 A arquitetura foi projetada para separar as camadas de **rede**, **aplicação** e **dados**, garantindo alta disponibilidade e gerenciamento facilitado.
 
 ![Estrutura](imagens/estrutura.png)
@@ -199,26 +201,26 @@ Em EFS clique em cria sistema de arquivos:
 3. Habilite IP público.
 4. Associe o **SG do Bastion Host**.
 5. No seu terminal, dentro da pasta donwload que contem sua chave, execute:
-```
+```bash
 scp -i "sua-chave.pem" sua-chave.pem ec2-user@<IP_PÚBLICO_DO_BASTION_HOST>:~/.ssh
 chmod 400 "sua-chave.pem"
 ```
 acesse a instancia Bastion com o comando:
-```
+```bash
 ssh -i "sua-chave.pem" ec2-user@<IP-PUBLICO-BASTION>
 ```
 e execute:
-```
+```bash
 chmod 400 /.ssh/"sua-chave.pem" #para dar permisão a sua chave dentro da isntancia bastion
-```
+```bash
 caso queira acessar sua instancia privada:
 ```
 ssh -i "sua-chave.pem" ec2-user@<IP-PRIVADO-INSTANCIA>
-```
+```bash
 
 Essa intancia (bastion) tem a função principal deo ponte para que possamos acessar as instancia privadas. Nesse documento não usamos eles mas caso tenha algum problema recomendo verificar a instancia privada atraves desses comandos.
 Aqui alguns comando que podem te ajudar:
-```
+```bash
 docker --version #verificar a instalação do docker
 docker logs wordpress-container #ver os logs do container e verificar status do container
 cat /var/log/wordpress.log #log da instancia
@@ -235,7 +237,7 @@ Crie um **Launch Template** para as instâncias WordPress.
 - VPC criada
 - SG: SG da instância
 - Não coloque subnet
-Adicione o seguinte User-Data
+Adicione o seguinte User-Data: [📄 Clique aqui para ver o script no repositório](https://github.com/ana-bia07/Projeto-Wordpress-AWS/blob/master/User-Data.sh)
 
 ### 7. Criando Target
 - Tipo para Instancia
